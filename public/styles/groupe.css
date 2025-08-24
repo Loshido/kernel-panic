@@ -1,0 +1,148 @@
+body{
+    padding: 32px;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+}
+
+header > label{
+    width: 64px;
+    height: 64px;
+    aspect-ratio: square;
+    position: relative;
+}
+
+header > label > img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 64px;
+    height: 64px;
+    border: 1px solid transparent;
+    transition: border-color .3s ease-in-out;
+}
+header > label > img.error{
+    border-color: #ff2592;
+}
+
+header > label > input{
+    display: none;
+}
+
+header > h1{
+    outline: none;
+    word-break: break-all;
+    text-decoration: underline 2px transparent;
+    transition: text-decoration-color .3s ease-out;
+}
+header > h1.error{
+    text-underline-offset: 4px;
+    text-decoration-color: #ff2592;
+}
+
+
+
+body > p{
+    margin: 16px 0;
+
+    font-size: 20px;
+    line-height: 28px;
+    color: #fff4;
+    font-style: italic;
+}
+
+body > main > section{
+    display: grid;
+    grid-template-columns: 1fr 1fr 48px;
+    height: 48px;
+    opacity: .5;
+    transition: opacity, .3s ease-in-out;
+}
+body > main > section.initiated{
+    opacity: 1;
+}
+body > main > section:not(.initiated) > div:nth-child(3){
+    display: none;
+}
+body > main > section > div{
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    outline: none;
+    border: 1px solid #fff4;
+
+    transition: border-color .3s ease-in-out;
+}
+body > main > section > div.error,
+body > main.error > section > div{
+    border-color: #ff2592;
+}
+body > main > section > div:nth-child(3){
+    justify-content: center;
+    width: 100%;
+    padding: 0;
+    font-size: 24px;
+    
+    cursor: pointer;
+    user-select: none;
+    transition: background-color .3s ease-in-out;
+}
+body > main > section > div:nth-child(3):hover{
+    background-color: #fff4;
+}
+
+body > footer > p{
+    line-height: 24px;
+}
+body > footer{
+    position: absolute;
+    --px: 24px;
+    bottom: 0;
+    left: 0;
+    width: calc(100% - 2 * var(--px));
+    margin: 24px var(--px);
+
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 16px;
+}
+
+body > footer > button{
+    width: 100%;
+    padding: 8px 16px;
+    border: none;
+    outline: none;
+    color: #191919;
+
+    font-family: "sora";
+    font-size: 24px;
+}
+@media (width < 450px) {
+    body{
+        padding: 32px 8px;
+    }
+    body > footer{
+        --px: 8px;
+    }
+}
+
+@media (width > 1000px) {
+    body{
+        padding: 64px 10vw;
+    }
+    body > footer{
+        --px: 10vw;
+    }
+}
+@media (width > 1400px) {
+    body{
+        padding: 64px 25vw;
+    }
+    body > footer{
+        --px: 25vw;
+    }
+}

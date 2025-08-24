@@ -1,0 +1,32 @@
+{
+    "unstable": ["kv"],
+    "compilerOptions": {
+        "lib": [
+            "deno.window",
+            "deno.unstable",
+            "es2022",
+            "dom",
+            "webworker",
+            "dom.iterable"
+        ],
+        "strict": true
+    },
+    "tasks": {
+        "dev": "deno --watch --allow-net --allow-write --allow-run --allow-read ./src/main.ts dev",
+        "bundle": "deno bundle -q --platform browser -o ./public/main.js ./src/client/main.ts",
+        "bundle-groupe": "deno bundle -q --platform browser -o ./public/groupe/main.js ./src/client/groupe/main.ts"
+    },
+    "imports": {
+        "@libs/qrcode": "jsr:@libs/qrcode@^3.0.0",
+        "argon2": "jsr:@bronti/argon2"
+    },
+    "fmt": {
+        "indentWidth": 4,
+        "semiColons": false,
+        "useTabs": false,
+        "jsx.multiLineParens": "never",
+        "jsx.bracketPosition": "maintain",
+        "spaceSurroundingProperties": true,
+        "singleQuote": true
+    }
+}
