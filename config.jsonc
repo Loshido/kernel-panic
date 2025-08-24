@@ -1,0 +1,58 @@
+{
+    "niveaux": [
+        {
+            "code": "???",
+            "recompense": 100,
+            "chapitres": [
+                {
+                    "code": "???",
+                    "recompense": 30
+                },
+                {
+                    "code": "???",
+                    "recompense": 30
+                },
+                {
+                    "code": "???",
+                    "recompense": 30
+                }
+            ]
+        },
+        {
+            "code": "???",
+            "recompense": 100,
+            "chapitres": [
+                {
+                    "code": "???",
+                    "recompense": 30
+                },
+                {
+                    "code": "???",
+                    "recompense": 30
+                },
+                {
+                    "code": "???",
+                    "recompense": 30
+                }
+            ]
+        },
+        {
+            "code": "???",
+            "recompense": 100,
+            "chapitres": [
+                {
+                    "code": "???",
+                    "recompense": 30
+                },
+                {
+                    "code": "???",
+                    "recompense": 30
+                },
+                {
+                    "code": "???",
+                    "recompense": 30
+                }
+            ]
+        }
+    ]
+}

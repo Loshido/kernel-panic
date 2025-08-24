@@ -1,0 +1,49 @@
+:root {
+    --stars: #fff2;
+}
+
+#falling-stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    width: 100dvw;
+    height: 100dvh;
+    z-index: 10;
+    pointer-events: none;
+}
+#falling-stars > p {
+    transform: rotate(90deg);
+    transform-origin: top left;
+    font-size: 12px;
+    position: absolute;
+    top: 0;
+    opacity: 0;
+    mix-blend-mode: soft-light;
+    background: linear-gradient(
+        90deg,
+        #fff0 35%,
+        var(--stars) 45%,
+        var(--stars) 55%,
+        #fff0 65%
+    );
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fall 30s linear infinite;
+}
+
+@keyframes fall {
+    from {
+        background-position: 300% 0;
+    }
+    5% {
+        opacity: 1;
+    }
+    95% {
+        opacity: 1;
+    }
+    to {
+        background-position: 0% 0;
+    }
+}

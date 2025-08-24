@@ -1,5 +1,5 @@
 @font-face {
-    font-family: "sora";
+    font-family: 'sora';
     src: url(/fonts/Sora.ttf);
 }
 
@@ -9,8 +9,8 @@
     box-sizing: border-box;
 }
 
-body{
-    font-family: "sora";
+body {
+    font-family: 'sora';
     background-color: #191919;
     color: #fff;
 }

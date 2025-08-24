@@ -1,6 +1,8 @@
 import type { Endpoint } from './mod.ts'
 import kv from '../kv.ts'
 import { verify } from 'argon2'
+import { nouvelleLigne } from './journal.ts'
+import { addScore } from './score.ts'
 
 interface Entite {
     niveau: number
@@ -17,7 +19,10 @@ async function verificationNiveau(
 
     return [verify(entite.code, hash.value[0]), hash.value[1]]
 }
-async function verificationChapitre(kv: Deno.Kv, entite: Entite): Promise<[boolean, number]> {
+async function verificationChapitre(
+    kv: Deno.Kv,
+    entite: Entite,
+): Promise<[boolean, number]> {
     const hash = await kv.get<[string, number]>([
         'chap',
         entite.niveau,
@@ -45,13 +50,6 @@ export const niveau: Endpoint = {
 
         const db = await kv()
 
-        const score = await db.get<number>(['score', group])
-        if(!(score.value)) {
-            return new Response('groupe inexistant', {
-                status: 404
-            })
-        }
-
         const [verification, recompense] = chapitre
             ? await verificationChapitre(db, {
                 code,
@@ -70,14 +68,21 @@ export const niveau: Endpoint = {
         }
 
         const tr = db.atomic()
-        tr.set(['score', group], score.value + recompense)
-        if(!chapitre) tr.set(['niv', niveau, group], new Date())
+
+        await addScore(group, recompense)
+        if (!chapitre) tr.set(['niv', niveau, group], new Date())
         else tr.set(['chap', niveau, chapitre, group], new Date())
 
         await tr.commit()
-    
-        // Déclencher animation
-        
+
+        if (chapitre) {
+            await nouvelleLigne(
+                `${group} a terminé le chapitre ${chapitre} du niveau ${niveau}`,
+            )
+        } else {
+            await nouvelleLigne(`${group} a terminé le niveau ${niveau}`)
+        }
+
         return new Response('ok')
     },
 }

@@ -1,5 +1,5 @@
 type ExternalListeners = {
-    onRemove: () => void,
+    onRemove: () => void
     createNext: () => void
 }
 
@@ -40,17 +40,23 @@ export class Membre {
         this.element?.remove()
     }
     listener(external: ExternalListeners) {
-        if(!this.element) return
-        const nom = this.element.querySelector('div:nth-child(1)') as HTMLDivElement
-        const prenom = this.element.querySelector('div:nth-child(2)') as HTMLDivElement
-        const rm = this.element.querySelector('div:nth-child(3)') as HTMLDivElement
+        if (!this.element) return
+        const nom = this.element.querySelector(
+            'div:nth-child(1)',
+        ) as HTMLDivElement
+        const prenom = this.element.querySelector(
+            'div:nth-child(2)',
+        ) as HTMLDivElement
+        const rm = this.element.querySelector(
+            'div:nth-child(3)',
+        ) as HTMLDivElement
 
         nom.addEventListener('input', () => {
             this.nom = nom.innerText
 
             nom.classList.toggle('error', false)
 
-            if(!this.initiated) {
+            if (!this.initiated) {
                 this.initiated = true
                 this.element?.classList.add('initiated')
                 external.createNext()
@@ -61,7 +67,7 @@ export class Membre {
 
             prenom.classList.toggle('error', false)
 
-            if(!this.initiated) {
+            if (!this.initiated) {
                 this.initiated = true
                 this.element?.classList.add('initiated')
                 external.createNext()

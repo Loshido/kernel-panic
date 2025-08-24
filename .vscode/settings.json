@@ -1,4 +1,7 @@
 {
     "deno.enable": true,
-    "deno.unstable": ["kv"]
+    "deno.unstable": [
+        "kv"
+    ],
+    "svg.preview.background": "transparent"
 }
