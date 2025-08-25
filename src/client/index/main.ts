@@ -7,3 +7,16 @@ journal()
 spawnStars(5)
 mountain()
 group()
+
+let qrcode = true
+document.addEventListener('keydown', (event) => {
+    switch (event.key) {
+        case 'q': {
+            qrcode = !qrcode
+
+            const e = document.getElementById('qrcode') as HTMLElement
+            e.style.opacity = qrcode ? '1' : '0'
+            break
+        }
+    }
+})

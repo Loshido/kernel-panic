@@ -50,6 +50,18 @@ export const niveau: Endpoint = {
 
         const db = await kv()
 
+        const enregistrement = await db.get(
+            chapitre
+                ? ['chap', niveau, chapitre, group]
+                : ['niv', niveau, group],
+        )
+
+        if (enregistrement.value !== null) {
+            return new Response('entité déjà validée', {
+                status: 400,
+            })
+        }
+
         const [verification, recompense] = chapitre
             ? await verificationChapitre(db, {
                 code,
@@ -62,7 +74,7 @@ export const niveau: Endpoint = {
             })
 
         if (!verification) {
-            return new Response('requête ratée', {
+            return new Response('vérification échouée', {
                 status: 400,
             })
         }

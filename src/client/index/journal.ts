@@ -1,4 +1,4 @@
-import { chapUp, lastNiv, nivUp } from './audio.ts'
+import { chapUp, nivUp } from './audio.ts'
 
 const journal = document.querySelector(
     'main > section:nth-child(1)',
@@ -17,8 +17,7 @@ export default async () => {
         setTimeout(async () => {
             if (old_n !== n - 1) return
 
-            if (lignes.includes('a terminé le niveau 3')) await lastNiv()
-            else if (!lignes.includes('chapitre')) await nivUp()
+            if (!lignes.includes('chapitre')) await nivUp()
             else await chapUp()
         }, 50)
 

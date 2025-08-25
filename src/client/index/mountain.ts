@@ -2,7 +2,7 @@ import { groups } from './group.ts'
 
 const width = window.innerWidth
 const height = Math.floor(window.innerHeight / 2)
-const maxheight = Math.floor(window.innerHeight / 3 * 2)
+const maxheight = window.innerHeight
 
 type Point = [number, number]
 const rand = (max: number, min: number) =>

@@ -100,4 +100,26 @@ body > div.montagne > div.group > img {
     bottom: 64px;
     width: 80px;
     height: 80px;
+
+    pointer-events: all;
+}
+body > div.montagne > div.group.premier > img {
+    border: 2px solid #ff2592;
+    animation: blink 2s ease infinite;
+}
+
+@keyframes blink {
+    from {
+        border-color: #ff2592;
+    }
+    50% {
+        border-color: #ff259244;
+    }
+    to {
+        border-color: #ff2592;
+    }
+}
+
+body section#qrcode {
+    transition: opacity 0.5s ease;
 }

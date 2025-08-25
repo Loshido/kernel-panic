@@ -1,7 +1,7 @@
 import { SCORE_MAX } from '../../env.ts'
 import { points } from './mountain.ts'
 
-const maxheight = Math.floor(window.innerHeight / 3 * 2)
+const maxheight = window.innerHeight
 export const groups: Group[] = []
 
 export default async function listen() {
@@ -21,6 +21,8 @@ export default async function listen() {
                 const g = new Group(data[0], data[1])
                 groups.push(g)
             }
+            groups.sort((a, b) => b.score - a.score)
+            groups.forEach((g, i) => g.reclassement(i + 1))
         }
     }
 }
@@ -28,33 +30,45 @@ export default async function listen() {
 class Group {
     id: string
     score: number
+    classement: number
     x: number = 0
     y: number = 0
     element: HTMLElement
     constructor(id: string, score: number) {
         this.id = id
         this.score = score
+        this.classement = 0
 
         const parent = document.querySelector('div.montagne') as HTMLElement
         this.element = document.createElement('div')
         this.element.classList.add('group')
-        this.element.innerHTML = `<img src="/img/${id}.png" alt="${id}"/>`
+        this.element.innerHTML =
+            `<img src="/img/${id}.png" alt="${id}" title="${id}"/>`
         parent.appendChild(this.element)
 
         this.update(score)
     }
 
+    reclassement(place: number) {
+        this.classement = place
+        this.element.classList.toggle('premier', this.classement === 1)
+    }
+
     update(score: number) {
-        this.x = Math.floor(window.innerWidth / SCORE_MAX * score)
+        this.x = Math.floor((window.innerWidth - 80) / SCORE_MAX * score)
         let y = Group.nearest_height(this.x)
         let ok = 0
         do {
+            ok = 0
             groups.forEach((g) => {
-                if (Math.abs(g.y - y) <= 16 && Math.abs(g.x - this.x) <= 16) {
+                if (
+                    Math.abs(g.y - y) <= 16 && Math.abs(g.x - this.x) <= 16 &&
+                    g.id !== this.id
+                ) {
                     y += 80
                 } else ok++
             })
-        } while(ok !== groups.length) 
+        } while (ok !== groups.length)
         this.y = y
         this.element.style.left = this.x + 'px'
         this.element.style.bottom = this.y + 'px'
