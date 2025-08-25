@@ -55,7 +55,11 @@ class Group {
     }
 
     update(score: number) {
-        this.x = Math.floor((window.innerWidth - 80) / SCORE_MAX * score)
+        this.score = score
+        const x = Math.floor((window.innerWidth - 80) / SCORE_MAX * score)
+
+        // ne dépasse pas des côtés
+        this.x = Math.max(Math.min(window.innerWidth - 80, x), 0)
         let y = Group.nearest_height(this.x)
         let ok = 0
         do {

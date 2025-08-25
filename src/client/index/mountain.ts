@@ -59,6 +59,7 @@ export default () => {
 
     parent.style.height = maxheight + 'px'
     document.body.appendChild(parent)
+    return parent
 }
 
 export const reload = () => {

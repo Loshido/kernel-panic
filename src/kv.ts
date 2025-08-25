@@ -17,10 +17,7 @@ type Membre = [string, string] // nom prenom
 
 // Informations sur les groupes
 // 'group' group-id
-export interface Group {
-    membres: Membre[]
-    image: string
-}
+export type Group = Membre[]
 
 // 'score' group-id -> number
 

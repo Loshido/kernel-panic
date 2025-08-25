@@ -41,7 +41,8 @@ const setupNiveau = async (niveau: number, data: Niveau) => {
     })
 }
 
-const _config = await Deno.readTextFile('../data/config.jsonc')
+const __config = await Deno.readTextFile('./data/config.jsonc')
+const _config = __config.split('\n').filter(ligne => !ligne.trimStart().startsWith('//')).join('\n')
 const config = JSON.parse(_config) as { niveaux: Niveau[] }
 config.niveaux.forEach(async (niveau, i) => await setupNiveau(i + 1, niveau))
 

@@ -25,6 +25,7 @@ export const groupe: Endpoint = {
             const url = './public/img/' + nom + '.png'
             await sharp(await img.bytes())
                 .resize(128, 128, { fit: 'cover' })
+                .withMetadata() // on garde le sens de l'image
                 .toFile(url)
         } catch (e) {
             console.error("L'image n'a pas pu être enregistré!", e)
@@ -36,10 +37,7 @@ export const groupe: Endpoint = {
         const db = await kv()
         const tr = db.atomic()
 
-        tr.set(['group', nom], {
-            membres: JSON.parse(membres),
-            image: '/img/' + nom + '.png',
-        })
+        tr.set(['group', nom], JSON.parse(membres))
 
         tr.set(['score', nom], 0)
 
