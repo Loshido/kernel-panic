@@ -144,10 +144,9 @@ enregistrer.addEventListener('click', async () => {
     }
     erreurs.innerText = indication
     if (!validation) return
-    if (
-        prompt("Entrez 'oui' pour cr\xE9er le groupe " + groupe.innerText) !==
-            'oui'
-    ) return
+    document.querySelectorAll('*[content-editable="true"').forEach((el) => {
+        el.setAttribute('content-editable', 'false')
+    })
     const form = new FormData()
     form.set('img', img)
     form.set('nom', groupe.innerText.trim())

@@ -1,3 +1,5 @@
+import { groups } from './group.ts'
+
 const width = window.innerWidth
 const height = Math.floor(window.innerHeight / 2)
 const maxheight = Math.floor(window.innerHeight / 3 * 2)
@@ -5,6 +7,7 @@ const maxheight = Math.floor(window.innerHeight / 3 * 2)
 type Point = [number, number]
 const rand = (max: number, min: number) =>
     min + Math.floor(Math.random() * (max - min))
+export const points: Point[] = []
 
 export const svg = (
     width: number,
@@ -46,9 +49,9 @@ export const line = (): Point[] => {
         [0, -4],
     ].map(([x, y]) => [x, maxheight - y])
 }
-
 export default () => {
-    const mountain = svg(width, maxheight, line())
+    points.push(...line())
+    const mountain = svg(width, maxheight, points)
 
     const parent = document.createElement('div')
     parent.classList.add('montagne')
@@ -59,8 +62,25 @@ export default () => {
 }
 
 export const reload = () => {
-    const parent = document.querySelector('div.montagne') as HTMLDivElement
-    parent.innerHTML = svg(width, maxheight, line())
+    const parent = document.querySelector(
+        'div.montagne > svg',
+    ) as HTMLDivElement
+
+    points.splice(0, points.length)
+    points.push(...line())
+    const path = points.map(([x, y]) => `L${x} ${y}`).join(' ') + ' z'
+
+    parent.innerHTML = `
+        <path d="M${path.slice(1)}" fill="url(#grad)"/>
+        <defs>
+            <linearGradient id="grad"  x1="50%" y1="0%" x2="50%" y2="100%">
+            <stop offset="0%" stop-color="#fff0" />
+            <stop offset="100%" stop-color="#fff4" />
+            </linearGradient>
+        </defs>
+    `
+
+    groups.forEach((g) => g.update(g.score))
 }
 
 document.addEventListener('keydown', (event) => {

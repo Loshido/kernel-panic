@@ -1,5 +1,4 @@
 import { hash } from 'argon2'
-import config from '../config.jsonc' with { type: 'json' }
 import kv from './kv.ts'
 
 const db = await kv()
@@ -30,4 +29,18 @@ const setupNiveau = async (niveau: number, data: Niveau) => {
         await setupChapitre(niveau, i + 1, chap)
     })
 }
+
+const _config = await Deno.readTextFile('./config.jsonc')
+const config = JSON.parse(_config) as { niveaux: Niveau[] }
 config.niveaux.forEach(async (niveau, i) => await setupNiveau(i + 1, niveau))
+
+for await (
+    const group of db.list({
+        prefix: ['group'],
+    })
+) {
+    console.log(group.key.at(1))
+    await db.set(['score', group.key.at(1) as string], 0)
+}
+
+Deno.exit(0)

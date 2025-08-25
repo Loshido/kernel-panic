@@ -7,15 +7,15 @@ export async function addScore(group: string, score: number) {
     const db = await kv()
     const old_score = await db.get<number>(['score', group])
 
-    if (!old_score.value) return
+    if (old_score.value === null) return
 
     await db.set(['score', group], old_score.value + score)
 
-    const encode = new TextEncoder().encode
-    const payload = JSON.stringify([group, score + old_score.value])
+    const encoder = new TextEncoder()
+    const payload = JSON.stringify([[group, score + old_score.value]])
     streams.forEach((stream) => {
         stream.enqueue(
-            encode(payload),
+            encoder.encode(payload),
         )
     })
 }
@@ -31,14 +31,11 @@ export const score: Endpoint = {
 
         const stream = new ReadableStream({
             start(controller) {
-                const encode = new TextEncoder().encode
-                scores.forEach((score) => {
-                    const payload = JSON.stringify([
-                        score.key.at(1),
-                        score.value,
-                    ])
-                    controller.enqueue(encode(payload))
-                })
+                const encoder = new TextEncoder()
+                const payload = JSON.stringify(
+                    scores.map((s) => [s.key.at(1), s.value]),
+                )
+                controller.enqueue(encoder.encode(payload))
 
                 streams.set(id, controller)
             },

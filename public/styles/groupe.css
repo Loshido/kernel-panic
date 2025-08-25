@@ -122,10 +122,10 @@ body > footer > button {
 }
 @media (width < 450px) {
     body {
-        padding: 32px 8px;
+        padding: 32px 16px;
     }
     body > footer {
-        --px: 8px;
+        --px: 16px;
     }
 }
 

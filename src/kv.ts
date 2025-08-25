@@ -4,7 +4,10 @@ export default async () => {
     kv = await Deno.openKv('./data/kv.db')
 
     setTimeout(() => {
-        if (kv) kv.close()
+        if (kv) {
+            kv.close()
+            kv = null
+        }
     }, TIMEOUT)
 
     return kv

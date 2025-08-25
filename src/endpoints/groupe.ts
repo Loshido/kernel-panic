@@ -1,6 +1,8 @@
 import kv from '../kv.ts'
+import { nouvelleLigne } from './journal.ts'
 import { Endpoint } from './mod.ts'
 import sharp from 'sharp'
+import { addScore } from './score.ts'
 
 export const groupe: Endpoint = {
     route: '/groupe',
@@ -22,7 +24,7 @@ export const groupe: Endpoint = {
         try {
             const url = './public/img/' + nom + '.png'
             await sharp(await img.bytes())
-                .resize(128, 128)
+                .resize(128, 128, { fit: 'cover' })
                 .toFile(url)
         } catch (e) {
             console.error("L'image n'a pas pu être enregistré!", e)
@@ -42,6 +44,9 @@ export const groupe: Endpoint = {
         tr.set(['score', nom], 0)
 
         await tr.commit()
+        await nouvelleLigne(`Nouveau groupe inscrit ${nom}`)
+        await addScore(nom, 0)
+
         return new Response('ok', {
             status: 200,
         })
