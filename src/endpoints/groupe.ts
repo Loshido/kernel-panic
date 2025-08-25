@@ -52,3 +52,16 @@ export const groupe: Endpoint = {
         })
     },
 }
+
+export const exist: Endpoint = {
+    route: "/groupe/exist",
+    async handler(_, url) {
+        const db = await kv()
+        const group = url.searchParams.get('g')
+        if(group) {
+            const exist = await db.get<number>(['score', group])
+            if(exist.value !== null) return new Response('ye', { status: 200 })
+        }
+        return new Response('no', { status: 400 })
+    } 
+}

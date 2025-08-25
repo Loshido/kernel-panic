@@ -57,7 +57,7 @@ export const niveau: Endpoint = {
         )
 
         if (enregistrement.value !== null) {
-            return new Response('entité déjà validée', {
+            return new Response('code déjà validée', {
                 status: 400,
             })
         }

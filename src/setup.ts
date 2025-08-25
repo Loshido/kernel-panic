@@ -14,6 +14,17 @@ interface Niveau {
     chapitres: Chapitre[]
 }
 
+for await (const n of db.list({
+    prefix: ['niv']
+})) {
+    await db.delete(n.key)
+}
+for await (const n of db.list({
+    prefix: ['chap']
+})) {
+    await db.delete(n.key)
+}
+
 const setupChapitre = async (
     niveau: number,
     chapitre: number,
@@ -30,7 +41,7 @@ const setupNiveau = async (niveau: number, data: Niveau) => {
     })
 }
 
-const _config = await Deno.readTextFile('./config.jsonc')
+const _config = await Deno.readTextFile('../data/config.jsonc')
 const config = JSON.parse(_config) as { niveaux: Niveau[] }
 config.niveaux.forEach(async (niveau, i) => await setupNiveau(i + 1, niveau))
 
@@ -41,6 +52,7 @@ for await (
 ) {
     console.log(group.key.at(1))
     await db.set(['score', group.key.at(1) as string], 0)
+    
 }
 
 Deno.exit(0)
