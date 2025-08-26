@@ -52,7 +52,7 @@ export class Membre {
         ) as HTMLDivElement
 
         nom.addEventListener('input', () => {
-            this.nom = nom.innerText
+            this.nom = nom.innerText.trim()
 
             nom.classList.toggle('error', false)
 
@@ -63,7 +63,7 @@ export class Membre {
             }
         })
         prenom.addEventListener('input', () => {
-            this.prenom = prenom.innerText
+            this.prenom = prenom.innerText.trim()
 
             prenom.classList.toggle('error', false)
 

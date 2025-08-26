@@ -33,7 +33,7 @@
     },
     "lint": {
         "rules": {
-            "exclude": ["no-window", "no-window-prefix"]
+            "exclude": ["no-window", "no-window-prefix", "no-explicit-any"]
         }
     }
 }

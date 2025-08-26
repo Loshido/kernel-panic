@@ -1,4 +1,5 @@
-import { chapUp, nivUp } from './audio.ts'
+import Audio from './audio.ts'
+import { consume } from './stream.ts'
 
 const journal = document.querySelector(
     'main > section:nth-child(1)',
@@ -6,21 +7,22 @@ const journal = document.querySelector(
 
 let n = 0
 export default async () => {
-    const response = await fetch('/journal')
-    const stream = response.body
-    if (!stream) return
     const decoder = new TextDecoder()
-
-    for await (const chunk of stream.values({ preventCancel: true })) {
+    await consume('/journal', chunk => {
         const lignes = decoder.decode(chunk)
         const old_n = n
         setTimeout(async () => {
             if (old_n !== n - 1) return
-
-            if (!lignes.includes('chapitre')) await nivUp()
-            else await chapUp()
+    
+            if(lignes.includes('a été')) {
+                await Audio.play('lizard')
+            } else if(lignes.includes('chapitre')) {
+                await Audio.play('chap')
+            } else {
+                await Audio.play('niv')
+            }
         }, 50)
-
+    
         lignes
             .split('\n')
             .map((l) => [l.slice(0, 5), l.slice(6)])
@@ -37,5 +39,5 @@ export default async () => {
                 }
                 journal.appendChild(p)
             })
-    }
+    })
 }

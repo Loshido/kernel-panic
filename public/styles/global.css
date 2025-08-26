@@ -10,7 +10,7 @@
 }
 
 body {
-    font-family: 'sora';
+    font-family: 'sora', monospace;
     background-color: #191919;
     color: #fff;
 }

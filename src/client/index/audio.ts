@@ -1,22 +1,31 @@
-const source = document.getElementById('lizard') as HTMLMediaElement
-source.loop = false
-source.volume = 1
-const niv = document.getElementById('niv') as HTMLMediaElement
-niv.loop = false
-niv.volume = 1
-const chap = document.getElementById('chap') as HTMLMediaElement
-chap.loop = false
-chap.volume = 1
+const x = document.getElementById('x') as HTMLDivElement
 
-export async function lizard() {
-    source.currentTime = 0
-    await source.play()
+export default class Audio {
+    static init(url: string, id: string) {
+        if (document.getElementById(`audio-${id}`)) return null
+
+        const audio = document.createElement('audio')
+        audio.src = url
+        audio.volume = 1
+        audio.loop = false
+        audio.id = `audio-${id}`
+
+        x.appendChild(audio)
+
+        return audio
+    }
+
+    static async play(id: string) {
+        const audio = document.getElementById(`audio-${id}`) as
+            | HTMLAudioElement
+            | null
+        if (!audio) return
+
+        audio.currentTime = 0
+        await audio.play()
+    }
 }
-export async function nivUp() {
-    niv.currentTime = 0
-    await niv.play()
-}
-export async function chapUp() {
-    chap.currentTime = 0
-    await chap.play()
-}
+
+Audio.init('/sfx/chap.wav', 'chap')
+Audio.init('/sfx/niv.wav', 'niv')
+Audio.init('/sfx/lizard.wav', 'lizard')

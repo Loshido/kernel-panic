@@ -7,21 +7,36 @@ type Endpoints = {
     [route: string]: Handler
 }
 
-export interface Endpoint {
+interface StaticEndpoint {
     route: string
     handler: Handler
 }
 
+export type Endpoint = DynEndpoint | StaticEndpoint
+
+interface DynEndpoint {
+    match: (pathname: string) => boolean
+    handler: Handler
+}
+
 const endpoints: Endpoints = {}
+const dynEndpoints: DynEndpoint[] = []
 
-const check = (value: unknown) => (
-    typeof value === 'object' && value !== null &&
-    'route' in value && 'handler' in value &&
-    typeof value.handler === 'function'
-)
+const check = (value: unknown) => {
+    const endpoint = (
+        typeof value === 'object' && value !== null &&
+        'handler' in value &&
+        typeof value.handler === 'function'
+    )
+    if(endpoint && 'route' in value) return 'endpoint'
+    if(endpoint && 'match' in value && typeof value.match === 'function') return 'dynEndpoint'
+    return null
+}
 
-const insert = (endpoint: Endpoint) => {
-    endpoints[endpoint.route] = endpoint.handler
+const insert = (endpoint: any) => {
+    const type = check(endpoint)
+    if(type === "dynEndpoint") dynEndpoints.push(endpoint as DynEndpoint)
+    else if(type === 'endpoint') endpoints[endpoint.route as string] = endpoint.handler as Handler
 }
 
 // On parcourt tous les fichiers du dossier
@@ -33,12 +48,11 @@ for await (const entry of Deno.readDir('./src/endpoints')) {
     for (const value of Object.values(mod)) {
         if (value instanceof Array) {
             for (const endpoint of value) {
-                if (!check(endpoint)) continue
-                insert(endpoint as Endpoint)
+                insert(endpoint)
             }
+            continue;
         }
-        if (!check(value)) continue
-        insert(value as Endpoint)
+        insert(value)
     }
 }
 

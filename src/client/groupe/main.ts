@@ -84,6 +84,11 @@ enregistrer.addEventListener('click', async () => {
         validation = false
 
         groupe.classList.toggle('error', true)
+    } else if (groupe.innerText.includes(' ')) {
+        indication += "Le nom du groupe ne doit pas contenir d'espace.\n"
+        validation = false
+
+        groupe.classList.toggle('error', true)
     }
 
     const img = buttonImage.files?.item(0)

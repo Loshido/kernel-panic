@@ -124,7 +124,7 @@ body section#qrcode {
     transition: opacity 0.5s ease;
 }
 
-#context{
+#context {
     z-index: 60;
     position: absolute;
 
@@ -138,27 +138,31 @@ body section#qrcode {
     pointer-events: all;
 }
 
-#context > div,
-#context > div .prompt{
-    padding: 4px 8px;
+#context > a{
+    color: white;
+    text-decoration: none;
+}
+#context > *,
+#context > * .prompt {
+    padding: 6px 12px;
     cursor: pointer;
     user-select: none;
-    transition: background-color .3s ease-in-out;
+    transition: background-color 0.3s ease-in-out;
 }
-#context > div:hover,
-#context > div .prompt:hover{
+#context > *:hover,
+#context > * .prompt:hover {
     background-color: #fff2;
 }
 
-#context > div:has(.prompt){
+#context > *:has(.prompt) {
     position: relative;
 }
-#context > div .prompt{
+#context > * .prompt {
     position: absolute;
     left: 100%;
     width: fit-content;
     top: 0;
-    
+
     background-color: #0008;
     backdrop-filter: blur(2px);
 }

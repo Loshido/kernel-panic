@@ -1,16 +1,13 @@
 import { SCORE_MAX } from '../../env.ts'
 import { points } from './mountain.ts'
+import { consume } from './stream.ts'
 
 const maxheight = window.innerHeight
 export const groups: Group[] = []
 
 export default async function listen() {
-    const response = await fetch('/score')
-    const stream = response.body
-    if (!stream) return
     const decoder = new TextDecoder()
-
-    for await (const chunk of stream.values({ preventCancel: true })) {
+    await consume('/score', (chunk) => {
         const _payload = decoder.decode(chunk)
         const payload = JSON.parse(_payload)
         for (const data of payload) {
@@ -24,7 +21,7 @@ export default async function listen() {
             groups.sort((a, b) => b.score - a.score)
             groups.forEach((g, i) => g.reclassement(i + 1))
         }
-    }
+    })
 }
 
 class Group {
