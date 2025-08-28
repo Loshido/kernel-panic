@@ -138,7 +138,7 @@ body section#qrcode {
     pointer-events: all;
 }
 
-#context > a{
+#context > a {
     color: white;
     text-decoration: none;
 }

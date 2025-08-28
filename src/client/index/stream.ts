@@ -6,22 +6,22 @@ export const consume = async (url: string, callback: Callback) => {
     const stream = response.body
     if (!stream) return
 
-    // as safari doesn't support asyncIterator on ReadableStream
-    // we need to do the hold way.
-    if(typeof stream[Symbol.asyncIterator] === 'function') {
+    // as safari doesn't support asyncIterator in ReadableStream
+    // we need to do the old way.
+    if (typeof stream[Symbol.asyncIterator] === 'function') {
         for await (const chunk of stream) {
             callback(chunk)
         }
     } else {
         const reader = stream.getReader()
 
-        // Notez, qu'il s'agit d'une fonction async, 
+        // Notez, qu'il s'agit d'une fonction async,
         // donc ce while ne bloque pas le reste de la page.
-        while(true) {
+        while (true) {
             const { done, value } = await reader.read()
-            if(done) break;
+            if (done) break
 
-            if(value) callback(value)
+            if (value) callback(value)
         }
     }
 }

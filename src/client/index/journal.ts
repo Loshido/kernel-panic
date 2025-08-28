@@ -8,21 +8,21 @@ const journal = document.querySelector(
 let n = 0
 export default async () => {
     const decoder = new TextDecoder()
-    await consume('/journal', chunk => {
+    await consume('/journal', (chunk) => {
         const lignes = decoder.decode(chunk)
         const old_n = n
         setTimeout(async () => {
             if (old_n !== n - 1) return
-    
-            if(lignes.includes('a été')) {
+
+            if (lignes.includes('a été')) {
                 await Audio.play('lizard')
-            } else if(lignes.includes('chapitre')) {
+            } else if (lignes.includes('chapitre')) {
                 await Audio.play('chap')
             } else {
                 await Audio.play('niv')
             }
         }, 50)
-    
+
         lignes
             .split('\n')
             .map((l) => [l.slice(0, 5), l.slice(6)])

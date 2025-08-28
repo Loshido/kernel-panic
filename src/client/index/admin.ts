@@ -1,10 +1,11 @@
 interface Action {
-    action: () => void,
+    action: () => void
     label: string
 }
 type ActionProps =
     | Action
-    | { html: string } | { children: HTMLElement[] }
+    | { html: string }
+    | { children: HTMLElement[] }
 
 const action = (props: ActionProps): HTMLElement => {
     const element = document.createElement('div')
@@ -56,16 +57,15 @@ export default (): HTMLElement => {
         context.style.display = 'flex'
 
         const rect = context.getBoundingClientRect()
-        
+
         if (window.innerWidth - rect.width < x) {
             context.style.right = x + 'px'
         } else context.style.left = x + 'px'
 
         const _y = Math.min(y, window.innerHeight - rect.height)
         context.style.top = _y + 'px'
-
     }
-    [
+    ;[
         {
             label: 'Avancer',
             async action() {
@@ -87,10 +87,10 @@ export default (): HTMLElement => {
             },
         },
         {
-            label: "Informations",
+            label: 'Informations',
             action() {
                 window.open(`/informations?g=${groupe}`, '_blank')
-            }
+            },
         },
         {
             children: confirmationAction({
@@ -102,7 +102,7 @@ export default (): HTMLElement => {
                     )
                     if (response.ok) close()
                 },
-            })
+            }),
         },
     ].forEach((a) => {
         context.appendChild(action(a))

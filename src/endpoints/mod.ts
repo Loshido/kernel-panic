@@ -23,20 +23,22 @@ const endpoints: Endpoints = {}
 const dynEndpoints: DynEndpoint[] = []
 
 const check = (value: unknown) => {
-    const endpoint = (
-        typeof value === 'object' && value !== null &&
+    const endpoint = typeof value === 'object' && value !== null &&
         'handler' in value &&
         typeof value.handler === 'function'
-    )
-    if(endpoint && 'route' in value) return 'endpoint'
-    if(endpoint && 'match' in value && typeof value.match === 'function') return 'dynEndpoint'
+    if (endpoint && 'route' in value) return 'endpoint'
+    if (endpoint && 'match' in value && typeof value.match === 'function') {
+        return 'dynEndpoint'
+    }
     return null
 }
 
 const insert = (endpoint: any) => {
     const type = check(endpoint)
-    if(type === "dynEndpoint") dynEndpoints.push(endpoint as DynEndpoint)
-    else if(type === 'endpoint') endpoints[endpoint.route as string] = endpoint.handler as Handler
+    if (type === 'dynEndpoint') dynEndpoints.push(endpoint as DynEndpoint)
+    else if (type === 'endpoint') {
+        endpoints[endpoint.route as string] = endpoint.handler as Handler
+    }
 }
 
 // On parcourt tous les fichiers du dossier
@@ -50,7 +52,7 @@ for await (const entry of Deno.readDir('./src/endpoints')) {
             for (const endpoint of value) {
                 insert(endpoint)
             }
-            continue;
+            continue
         }
         insert(value)
     }
