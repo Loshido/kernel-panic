@@ -10,15 +10,17 @@ export function spawnStars(n: number) {
 
     const secret = rand(chain.length)
     chain = chain.slice(0, secret) + '🛰️' + chain.slice(secret)
-    const span = document.createElement('span')
 
+    // on cherche le nb de lettres qu'on peut mettre
+    // sur la hauteur de l'écran à la vertical
+    const span = document.createElement('span')
     span.style.font = '12px sora'
     span.style.visibility = 'hidden'
     span.style.position = 'absolute'
     span.textContent = '1'
     document.body.appendChild(span)
 
-    const char = span.getBoundingClientRect().width
+    const char = span.getBoundingClientRect().width // largeur de '1' sur la page
     document.body.removeChild(span)
 
     const height = window.innerHeight

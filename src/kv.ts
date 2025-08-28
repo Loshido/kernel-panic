@@ -13,7 +13,7 @@ export default async () => {
     return kv
 }
 
-type Membre = [string, string] // nom prenom
+export type Membre = [string, string] // nom prenom
 
 // Informations sur les groupes
 // 'group' group-id

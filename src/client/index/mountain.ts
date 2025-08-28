@@ -9,11 +9,12 @@ const rand = (max: number, min: number) =>
     min + Math.floor(Math.random() * (max - min))
 export const points: Point[] = []
 
-export const svg = (
+const svg = (
     width: number,
     height: number,
     points: [number, number][],
 ) => {
+    // L -> Line to, M -> Move to, z -> close line to first point
     const path = points.map(([x, y]) => `L${x} ${y}`).join(' ') + ' z'
 
     return `<svg width="${width}" height="${height}" viewport="0 0 ${width} ${height}">
@@ -27,27 +28,26 @@ export const svg = (
     </svg>`
 }
 
-export const line = (): Point[] => {
+const line = (): Point[] => {
     const points: Point[] = [[0, 0]]
 
     const n = rand(25, 10)
     for (let i = 0; i < n - 1; i++) {
         const facteur = rand(0.8, -0.5) + 0.9
         const xi = (i / n) * width
-        const vi = (width / n) / 2
-        const x = Math.floor(xi + Math.random() * vi)
+        const di = (width / n) / 2
+        const x = Math.floor(xi + Math.random() * di)
         const y = Math.floor(points[i][1] + rand(50, 25) * facteur)
 
         points.push([x, y])
     }
 
-    points.push([width + 4, height * 0.80])
-
     return [
-        ...points,
-        [width + 4, -4],
-        [0, -4],
-    ].map(([x, y]) => [x, maxheight - y])
+        ...points, // (haut gauche à haut droit)
+        [width + 4, height * 0.80], // haut droit
+        [width + 4, -4], // bas droit
+        [0, -4], // bas gauche
+    ].map(([x, y]) => [x, maxheight - y]) // l'axe des ordonnées est inversé
 }
 export default () => {
     points.push(...line())
@@ -83,11 +83,3 @@ export const reload = () => {
 
     groups.forEach((g) => g.update(g.score))
 }
-
-document.addEventListener('keydown', (event) => {
-    switch (event.key) {
-        case 'r':
-            reload()
-            break
-    }
-})

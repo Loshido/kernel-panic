@@ -55,9 +55,7 @@ chap() {
     return 1
   fi
 
-  local target="${niveau}/chapitre-$1"
-
-  cd "$target" || {
+  cd "$niveau/chapitre-$1" || {
     return 1
   }
 }

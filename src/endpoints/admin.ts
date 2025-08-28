@@ -95,3 +95,42 @@ export const reset: Endpoint = {
         return new Response('ok')
     },
 }
+export const remove: Endpoint = {
+    route: '/admin/remove',
+    async handler(_, url) {
+        const token = url.searchParams.get('t')
+        if (!token || token !== ADMIN_TOKEN) {
+            return new Response('Unauthorized', {
+                status: 401,
+            })
+        }
+
+        const group = url.searchParams.get('g')
+        if (!group) {
+            return new Response('Bad request', {
+                status: 400,
+            })
+        }
+
+        const db = await kv()
+        await db.delete(['score', group])
+        await db.delete(['group', group])
+
+        await nouvelleLigne(`${group} a été supprimé`)
+
+        for await (const niv of db.list({ prefix: ['niv'] })) {
+            if (niv.key.at(2) === group) {
+                await db.delete(niv.key)
+            }
+        }
+        for await (const niv of db.list({ prefix: ['chap'] })) {
+            if (niv.key.at(3) === group) {
+                await db.delete(niv.key)
+            }
+        }
+
+        await Deno.remove('./public/img/' + group + '.png')
+
+        return new Response('ok')
+    },
+}

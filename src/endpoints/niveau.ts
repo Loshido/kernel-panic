@@ -79,19 +79,14 @@ export const niveau: Endpoint = {
             })
         }
 
-        const tr = db.atomic()
-
         await addScore(group, recompense)
-        if (!chapitre) tr.set(['niv', niveau, group], new Date())
-        else tr.set(['chap', niveau, chapitre, group], new Date())
-
-        await tr.commit()
-
         if (chapitre) {
+            await db.set(['chap', niveau, chapitre, group], new Date())
             await nouvelleLigne(
                 `${group} a terminé le chapitre ${chapitre} du niveau ${niveau}`,
             )
         } else {
+            await db.set(['niv', niveau, group], new Date())
             await nouvelleLigne(`${group} a terminé le niveau ${niveau}`)
         }
 

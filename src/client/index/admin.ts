@@ -104,6 +104,18 @@ export default (): HTMLElement => {
                 },
             }),
         },
+        {
+            children: confirmationAction({
+                label: 'Supprimer',
+                async onClick() {
+                    if (!groupe) return
+                    const response = await fetch(
+                        `/admin/remove?t=${admin}&g=${groupe}`,
+                    )
+                    if (response.ok) close()
+                },
+            }),
+        },
     ].forEach((a) => {
         context.appendChild(action(a))
     })

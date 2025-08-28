@@ -1,5 +1,5 @@
 import group from './group.ts'
-import mountain from './mountain.ts'
+import mountain, { reload } from './mountain.ts'
 import { spawnStars } from './stars.ts'
 import journal from './journal.ts'
 import admin from './admin.ts'
@@ -14,6 +14,9 @@ group()
 let qrcode = true
 document.addEventListener('keydown', (event) => {
     switch (event.key) {
+        case 'r':
+            reload()
+            break
         case 'q': {
             qrcode = !qrcode
 

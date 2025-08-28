@@ -48,26 +48,3 @@ export const journal: Endpoint = {
         })
     },
 }
-
-// tmp
-export const push: Endpoint = {
-    route: '/push',
-    async handler() {
-        if (Math.random() > 0.5) {
-            await nouvelleLigne(
-                `${
-                    Math.floor(Math.random() * 10E6).toString(36)
-                } a terminé le chapitre ${
-                    Math.floor(1 + Math.random() * 5)
-                } du niveau ${Math.floor(1 + Math.random() * 5)}`,
-            )
-        } else {
-            await nouvelleLigne(
-                `${
-                    Math.floor(Math.random() * 10E6).toString(36)
-                } a terminé le niveau ${Math.floor(1 + Math.random() * 5)}`,
-            )
-        }
-        return new Response('ok')
-    },
-}

@@ -1,46 +1,72 @@
-type ExternalListeners = {
-    onRemove: () => void
-    createNext: () => void
+const membres: Membre[] = []
+const parent = document.querySelector('main') as HTMLElement
+
+// On passe sur chaque membre vérifier s'il est correcte sinon on prévient
+export function validerMembres(): [boolean, [string, string][]] {
+    let erreur = false
+    const m: [string, string][] = membres
+        .filter((m) => m.initiated)
+        .map((membre) => {
+            erreur = !membre.estValide()
+            return [membre.nom, membre.prenom]
+        })
+
+    if (m.length === 0) {
+        parent.classList.toggle('error', true)
+    }
+
+    return [!erreur, m]
 }
 
-export class Membre {
+class Membre {
     id: string
-    element?: HTMLElement
+    element: HTMLElement
     nom: string = ''
     prenom: string = ''
 
     initiated: boolean = false
-    constructor(id: string, parent: HTMLElement, listeners: ExternalListeners) {
-        this.id = id
-        this.create()
-        this.listener(listeners)
+    constructor(parent: HTMLElement) {
+        this.id = Math.floor(Math.random() * 10E6).toString(36)
 
-        this.element!.id = id
-
-        parent.appendChild(this.element!)
-    }
-
-    private create() {
-        const section = document.createElement('section')
-        section.innerHTML = `
+        this.element = document.createElement('section')
+        this.element.id = this.id
+        this.element.innerHTML = `
             <div contenteditable="true">
-                Nom
+            Nom
             </div>
             <div contenteditable="true">
-                Prénom
+            Prénom
             </div>
             <div>
-                -
+            -
             </div>
         `
+        this.setup()
 
-        this.element = section
+        // Si le parent était en erreur
+        parent.classList.toggle('error', false)
+        parent.appendChild(this.element)
+        membres.push(this)
     }
-    remove() {
-        this.element?.remove()
+    static insert() {
+        new Membre(parent)
+        console.log(membres)
     }
-    listener(external: ExternalListeners) {
-        if (!this.element) return
+    estValide(): boolean {
+        let erreur = false
+        if (this.nom.length === 0) {
+            this.element.querySelector('div:nth-child(1)')?.classList
+                .toggle('error', true)
+            erreur = true
+        }
+        if (this.prenom.length === 0) {
+            this.element.querySelector('div:nth-child(2)')?.classList
+                .toggle('error', true)
+            erreur = true
+        }
+        return !erreur
+    }
+    setup() {
         const nom = this.element.querySelector(
             'div:nth-child(1)',
         ) as HTMLDivElement
@@ -55,27 +81,29 @@ export class Membre {
             this.nom = nom.innerText.trim()
 
             nom.classList.toggle('error', false)
-
             if (!this.initiated) {
                 this.initiated = true
-                this.element?.classList.add('initiated')
-                external.createNext()
+                this.element.classList.add('initiated')
+                Membre.insert()
             }
         })
         prenom.addEventListener('input', () => {
             this.prenom = prenom.innerText.trim()
 
             prenom.classList.toggle('error', false)
-
             if (!this.initiated) {
                 this.initiated = true
-                this.element?.classList.add('initiated')
-                external.createNext()
+                this.element.classList.add('initiated')
+                Membre.insert()
             }
         })
         rm.addEventListener('click', () => {
-            this.remove()
-            external.onRemove()
+            this.element.remove()
+            const i = membres.findIndex((p) => p.id === this.id)
+            membres.splice(i, 1)
         })
     }
 }
+Membre.insert()
+
+export default membres

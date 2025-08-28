@@ -1,14 +1,13 @@
-import kv from '../kv.ts'
+import kv, { type Membre } from '../kv.ts'
 import { nouvelleLigne } from './journal.ts'
 import { Endpoint } from './mod.ts'
 import sharp from 'sharp'
 import { addScore } from './score.ts'
-import { Membre } from '../client/groupe/membres.ts'
 
 export const groupe: Endpoint = {
     route: '/groupe',
     async handler(request) {
-        if (request.method === 'GET') return 'next'
+        if (request.method !== 'POST') return 'next'
 
         const form = await request.formData()
 
@@ -36,13 +35,9 @@ export const groupe: Endpoint = {
         }
 
         const db = await kv()
-        const tr = db.atomic()
+        await db.set(['group', nom], JSON.parse(membres))
+        await db.set(['score', nom], 0)
 
-        tr.set(['group', nom], JSON.parse(membres))
-
-        tr.set(['score', nom], 0)
-
-        await tr.commit()
         await nouvelleLigne(`Nouveau groupe inscrit ${nom}`)
         await addScore(nom, 0)
 
@@ -67,7 +62,7 @@ export const exist: Endpoint = {
 
 export const informationAPI: Endpoint = {
     route: '/informations',
-    async handler(req, url) {
+    async handler(_, url) {
         // /informations renvoie vers la page html
         // /informations?api la réponse de l'endpoint
         if (!url.searchParams.has('api')) {
