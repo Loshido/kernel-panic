@@ -29,7 +29,7 @@ main > section:nth-child(1) > p {
 }
 main > section:nth-child(1) > p:nth-child(1),
 main > section:nth-child(1) > p:not(:nth-child(1))::before {
-    color: #fff4;
+    color: hsl(from var(--text) h s l / 0.25);
     font-style: italic;
 }
 main > section:nth-child(1) > p:not(:nth-child(1))::before {
@@ -57,7 +57,7 @@ main > section:nth-child(2) > img {
 
 @keyframes appear {
     from {
-        background-color: #ff2592;
+        background-color: var(--surbrillance);
     }
     to {
         background-color: transparent;
@@ -75,8 +75,15 @@ body > div.montagne {
     overflow: hidden;
     pointer-events: none;
 }
+
+body > div.montagne > svg stop[offset="0%"] {
+    stop-color: hsla(from var(--couleur) h s l / 0);
+}
+body > div.montagne > svg stop[offset="100%"] {
+    stop-color: hsl(from var(--couleur) h s l / 0.4);
+}
 body > div.montagne > svg {
-    stroke: white;
+    stroke: var(--couleur);
     stroke-width: 2px;
 }
 
@@ -92,7 +99,7 @@ body > div.montagne > div.group::before {
     left: 0;
     width: 2px;
     height: 64px;
-    background: linear-gradient(0deg, #fff0, #fff);
+    background: linear-gradient(0deg, hsla(from var(--couleur) h s l / 0.0), hsl(from var(--couleur) h s l));
 }
 body > div.montagne > div.group > img {
     z-index: 50;
@@ -104,19 +111,19 @@ body > div.montagne > div.group > img {
     pointer-events: all;
 }
 body > div.montagne > div.group.premier > img {
-    border: 2px solid #ff2592;
+    border: 2px solid var(--surbrillance);
     animation: blink 2s ease infinite;
 }
 
 @keyframes blink {
     from {
-        border-color: #ff2592;
+        border-color: var(--surbrillance);
     }
     50% {
-        border-color: #ff259244;
+        border-color: hsl(from var(--surbrillance) h s calc(l - 30.0));
     }
     to {
-        border-color: #ff2592;
+        border-color: var(--surbrillance);
     }
 }
 
@@ -132,14 +139,14 @@ body section#qrcode {
     display: flex;
     flex-direction: column;
 
-    background-color: #0008;
+    background-color: hsla(from var(--fond) h s calc(l - 50) / 0.8);
     backdrop-filter: blur(2px);
     color: #fff;
     pointer-events: all;
 }
 
 #context > a {
-    color: white;
+    color: var(--couleur);
     text-decoration: none;
 }
 #context > *,
@@ -163,6 +170,6 @@ body section#qrcode {
     width: fit-content;
     top: 0;
 
-    background-color: #0008;
+    background-color: hsla(from var(--fond) h s calc(l - 10) / 0.5);
     backdrop-filter: blur(2px);
 }

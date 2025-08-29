@@ -1,5 +1,6 @@
 import { qrcode } from '@libs/qrcode'
 import { Endpoint } from './mod.ts'
+import { couleurs } from 'env'
 
 export const groupe: Endpoint = {
     route: '/groupe.svg',
@@ -8,8 +9,8 @@ export const groupe: Endpoint = {
         return new Response(
             qrcode(newUrl, {
                 border: 0,
-                dark: '#fff',
-                light: '#191919',
+                dark: '--text' in couleurs ? couleurs['--text'] : '#fff',
+                light: '--fond' in couleurs ? couleurs['--fond'] : '#191919',
                 output: 'svg',
             }),
             {

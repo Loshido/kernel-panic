@@ -27,7 +27,7 @@ header > label > img {
     transition: border-color 0.3s ease-in-out;
 }
 header > label > img.error {
-    border-color: #ff2592;
+    border-color: var(--surbrillance);
 }
 
 header > label > input {
@@ -42,7 +42,7 @@ header > h1 {
 }
 header > h1.error {
     text-underline-offset: 4px;
-    text-decoration-color: #ff2592;
+    text-decoration-color: var(--surbrillance);
 }
 
 body > p {
@@ -115,7 +115,7 @@ body > footer > button {
     padding: 8px 16px;
     border: none;
     outline: none;
-    color: #191919;
+    color: var(--fond);
 
     font-family: 'sora';
     font-size: 24px;

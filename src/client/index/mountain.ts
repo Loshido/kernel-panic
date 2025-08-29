@@ -21,8 +21,7 @@ const svg = (
         <path d="M${path.slice(1)}" fill="url(#grad)"/>
         <defs>
             <linearGradient id="grad"  x1="50%" y1="0%" x2="50%" y2="100%">
-            <stop offset="0%" stop-color="#fff0" />
-            <stop offset="100%" stop-color="#fff4" />
+                <stop offset="0%" /><stop offset="100%" />
             </linearGradient>
         </defs>
     </svg>`
