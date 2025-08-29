@@ -1,8 +1,7 @@
 import type { Endpoint } from './mod.ts'
 import kv from 'lib/kv.ts'
 import { verify } from 'argon2'
-import { nouvelleLigne } from './journal.ts'
-import { addScore } from './score.ts'
+import { emit } from 'lib/events.ts'
 
 interface Entite {
     niveau: number
@@ -37,12 +36,12 @@ export const niveau: Endpoint = {
     route: '/niveau',
     async handler(request) {
         const body = await request.json()
-        const group = body.groupe satisfies string | undefined
+        const groupe = body.groupe satisfies string | undefined
         const code = body.code satisfies string | undefined
         const niveau = body.niveau satisfies number | undefined
         const chapitre = body.chapitre satisfies number | undefined
 
-        if (!body || !group || !code || !niveau) {
+        if (!body || !groupe || !code || !niveau) {
             return new Response('requête invalide', {
                 status: 400,
             })
@@ -52,8 +51,8 @@ export const niveau: Endpoint = {
 
         const enregistrement = await db.get(
             chapitre
-                ? ['chap', niveau, chapitre, group]
-                : ['niv', niveau, group],
+                ? ['chap', niveau, chapitre, groupe]
+                : ['niv', niveau, groupe],
         )
 
         if (enregistrement.value !== null) {
@@ -79,15 +78,23 @@ export const niveau: Endpoint = {
             })
         }
 
-        await addScore(group, recompense)
+        await emit('points', {
+            groupe,
+            add: recompense,
+        })
         if (chapitre) {
-            await db.set(['chap', niveau, chapitre, group], new Date())
-            await nouvelleLigne(
-                `${group} a terminé le chapitre ${chapitre} du niveau ${niveau}`,
-            )
+            await db.set(['chap', niveau, chapitre, groupe], new Date())
+            emit('journal', {
+                message:
+                    `${groupe} a terminé le chapitre ${chapitre} du niveau ${niveau}`,
+                son: 'chap',
+            })
         } else {
-            await db.set(['niv', niveau, group], new Date())
-            await nouvelleLigne(`${group} a terminé le niveau ${niveau}`)
+            await db.set(['niv', niveau, groupe], new Date())
+            emit('journal', {
+                message: `${groupe} a terminé le niveau ${niveau}`,
+                son: 'niv',
+            })
         }
 
         return new Response('ok')

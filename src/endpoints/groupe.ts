@@ -1,8 +1,7 @@
 import kv, { type Membre } from 'lib/kv.ts'
-import { nouvelleLigne } from './journal.ts'
 import { Endpoint } from './mod.ts'
 import sharp from 'sharp'
-import { addScore } from './score.ts'
+import { emit } from 'lib/events.ts'
 
 export const groupe: Endpoint = {
     route: '/groupe',
@@ -12,17 +11,17 @@ export const groupe: Endpoint = {
         const form = await request.formData()
 
         const img = form.get('img') as File | null
-        const nom = form.get('nom') as string | null
+        const groupe = form.get('nom') as string | null
         const membres = form.get('membres') as string | null
 
-        if (!img || !nom || !membres) {
+        if (!img || !groupe || !membres) {
             return new Response('Mauvaise requête', {
                 status: 400,
             })
         }
 
         try {
-            const url = './public/img/' + nom + '.png'
+            const url = './public/img/' + groupe + '.png'
             await sharp(await img.bytes())
                 .resize(128, 128, { fit: 'cover' })
                 .withMetadata() // on garde le sens de l'image
@@ -35,11 +34,17 @@ export const groupe: Endpoint = {
         }
 
         const db = await kv()
-        await db.set(['group', nom], JSON.parse(membres))
-        await db.set(['score', nom], 0)
+        await db.set(['group', groupe], JSON.parse(membres))
+        await db.set(['score', groupe], 0)
 
-        await nouvelleLigne(`Nouveau groupe inscrit ${nom}`)
-        await addScore(nom, 0)
+        emit('journal', {
+            message: `Nouveau groupe inscrit ${groupe}`,
+            son: 'chap',
+        })
+        await emit('points', {
+            groupe,
+            set: 0,
+        })
 
         return new Response('ok', {
             status: 200,

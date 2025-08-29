@@ -1,3 +1,4 @@
+import { listen } from 'lib/events.ts'
 import { Endpoint } from './mod.ts'
 
 async function lireLignes(n: number): Promise<string> {
@@ -8,21 +9,21 @@ async function lireLignes(n: number): Promise<string> {
 
 const streams: Map<string, ReadableStreamDefaultController> = new Map()
 
-export async function nouvelleLigne(ligne: string) {
+listen('journal', async (event) => {
     const time = new Date().toLocaleTimeString(undefined, {
         timeStyle: 'short',
     })
 
-    const data = `${time} ${ligne}\n`
-    await Deno.writeTextFile('./data/journal.txt', data, {
+    event.message = `${time} ${event.message}\n`
+    await Deno.writeTextFile('./data/journal.txt', event.message, {
         append: true,
     })
     const encoder = new TextEncoder()
 
     streams.forEach((stream) => {
-        stream.enqueue(encoder.encode(data))
+        stream.enqueue(encoder.encode(event.message))
     })
-}
+})
 
 export const journal: Endpoint = {
     route: '/journal',

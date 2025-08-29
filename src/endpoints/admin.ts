@@ -1,7 +1,6 @@
 import kv from 'lib/kv.ts'
-import { nouvelleLigne } from './journal.ts'
 import { Endpoint } from './mod.ts'
-import { addScore } from './score.ts'
+import { emit } from 'lib/events.ts'
 
 const ADMIN_TOKEN = Deno.env.get('ADMIN_TOKEN') || 'dBxG5104s<f'
 
@@ -15,15 +14,21 @@ export const avancer: Endpoint = {
             })
         }
 
-        const group = url.searchParams.get('g')
-        if (!group) {
+        const groupe = url.searchParams.get('g')
+        if (!groupe) {
             return new Response('Bad request', {
                 status: 400,
             })
         }
 
-        await nouvelleLigne(`${group} a été avancé`)
-        await addScore(group, 30)
+        emit('journal', {
+            message: `${groupe} a été avancé`,
+            son: 'lizard',
+        })
+        await emit('points', {
+            groupe: groupe,
+            add: 30,
+        })
 
         return new Response('ok')
     },
@@ -39,15 +44,21 @@ export const reculer: Endpoint = {
             })
         }
 
-        const group = url.searchParams.get('g')
-        if (!group) {
+        const groupe = url.searchParams.get('g')
+        if (!groupe) {
             return new Response('Bad request', {
                 status: 400,
             })
         }
 
-        await nouvelleLigne(`${group} a été reculé`)
-        await addScore(group, -30)
+        emit('journal', {
+            message: `${groupe} a été reculé`,
+            son: 'lizard',
+        })
+        await emit('points', {
+            groupe,
+            add: -30,
+        })
 
         return new Response('ok')
     },
@@ -63,31 +74,30 @@ export const reset: Endpoint = {
             })
         }
 
-        const group = url.searchParams.get('g')
-        if (!group) {
+        const groupe = url.searchParams.get('g')
+        if (!groupe) {
             return new Response('Bad request', {
                 status: 400,
             })
         }
 
         const db = await kv()
-        const score = await db.get<number>(['score', group])
-        if (score.value === null) {
-            return new Response('Bad request', {
-                status: 400,
-            })
-        }
-
-        await addScore(group, -score.value)
-        await nouvelleLigne(`${group} a été réinitialisé`)
+        emit('journal', {
+            message: `${groupe} a été réinitialisé`,
+            son: 'lizard',
+        })
+        await emit('points', {
+            groupe,
+            set: 0,
+        })
 
         for await (const niv of db.list({ prefix: ['niv'] })) {
-            if (niv.key.at(2) === group) {
+            if (niv.key.at(2) === groupe) {
                 await db.delete(niv.key)
             }
         }
         for await (const niv of db.list({ prefix: ['chap'] })) {
-            if (niv.key.at(3) === group) {
+            if (niv.key.at(3) === groupe) {
                 await db.delete(niv.key)
             }
         }
@@ -116,7 +126,10 @@ export const remove: Endpoint = {
         await db.delete(['score', group])
         await db.delete(['group', group])
 
-        await nouvelleLigne(`${group} a été supprimé`)
+        emit('journal', {
+            message: `${group} a été supprimé`,
+            son: 'lizard',
+        })
 
         for await (const niv of db.list({ prefix: ['niv'] })) {
             if (niv.key.at(2) === group) {
