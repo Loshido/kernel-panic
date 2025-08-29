@@ -50,7 +50,6 @@ class Membre {
     }
     static insert() {
         new Membre(parent)
-        console.log(membres)
     }
     estValide(): boolean {
         let erreur = false

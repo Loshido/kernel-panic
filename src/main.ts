@@ -1,5 +1,8 @@
 import endpoints from './endpoints/mod.ts'
 import { serveDir } from 'jsr:@std/http/file-server'
+import setupListeners from "./events/mod.ts"
+
+await setupListeners()
 
 Deno.serve({
     port: 80,

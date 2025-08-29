@@ -4,15 +4,10 @@ export type Handler = (
     info: Deno.ServeHandlerInfo<Deno.Addr>,
 ) => Promise<Response | 'next'> | Response | 'next'
 
-export type Endpoint = DynEndpoint | StaticEndpoint
+export type Endpoint = StaticEndpoint
 
 interface StaticEndpoint {
     route: string
-    handler: Handler
-}
-
-interface DynEndpoint {
-    match: (pathname: string) => boolean
     handler: Handler
 }
 

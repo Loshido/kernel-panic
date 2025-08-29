@@ -1,26 +1,28 @@
-import { SCORE_MAX } from '../../env.ts'
+import { SCORE_MAX } from 'env'
 import { points } from './mountain.ts'
-import { consume } from './stream.ts'
+import { listen } from 'lib/events.ts'
 
 const maxheight = window.innerHeight
 export const groups: Group[] = []
 
-export default async function listen() {
-    const decoder = new TextDecoder()
-    await consume('/score', (chunk) => {
-        const _payload = decoder.decode(chunk)
-        const payload = JSON.parse(_payload)
-        for (const data of payload) {
-            const group = groups.find((g) => g.id === data[0])
-            if (group) {
-                group.update(data[1])
-            } else {
-                const g = new Group(data[0], data[1])
-                groups.push(g)
-            }
-            groups.sort((a, b) => b.score - a.score)
-            groups.forEach((g, i) => g.reclassement(i + 1))
+export default () => {
+    listen('points', (event) => {
+        const groupe = groups.find((g) => g.id === event.groupe)
+        let score = 0
+        if(groupe && 'add' in event) {
+            score = event.add + groupe.score
+        }  else if('set' in event) {
+            score = event.set
         }
+
+        if (groupe) {
+            groupe.update(score)
+        } else {
+            const g = new Group(event.groupe, score)
+            groups.push(g)
+        }
+        groups.sort((a, b) => b.score - a.score)
+        groups.forEach((g, i) => g.reclassement(i + 1))
     })
 }
 

@@ -1,43 +1,36 @@
 import Audio from './audio.ts'
-import { consume } from './stream.ts'
+import { listen } from 'lib/events.ts'
 
 const journal = document.querySelector(
     'main > section:nth-child(1)',
 ) as HTMLDivElement
 
 let n = 0
-export default async () => {
-    const decoder = new TextDecoder()
-    await consume('/journal', (chunk) => {
-        const lignes = decoder.decode(chunk)
-        const old_n = n
-        setTimeout(async () => {
-            if (old_n !== n - 1) return
-
-            if (lignes.includes('a été')) {
-                await Audio.play('lizard')
-            } else if (lignes.includes('chapitre')) {
-                await Audio.play('chap')
-            } else {
-                await Audio.play('niv')
+let t1 = 0
+export default () => {
+    listen('journal', (event) => {
+        t1 = Date.now()
+        if(event.son) {
+            const t2 = t1
+            setTimeout(async () => {
+                if(t2 !== t1 || !event.son) return
+    
+                await Audio.play(event.son)
+            }, 50)
+        }
+        event.message.split('\n').filter(el => el.length > 5).forEach(message => {
+            const [t, msg] = [message.slice(0, 5), message.slice(6)]
+        
+            const p = document.createElement('p')
+            p.innerText = msg
+            p.setAttribute('data-at', t)
+            n++
+            if (n >= 30) {
+                journal.querySelector(
+                    'main > section:nth-child(1) > p:nth-child(2)',
+                )?.remove()
             }
-        }, 50)
-
-        lignes
-            .split('\n')
-            .map((l) => [l.slice(0, 5), l.slice(6)])
-            .filter((p) => p[1].length > 4)
-            .forEach(([t, message]) => {
-                const p = document.createElement('p')
-                p.innerText = message
-                p.setAttribute('data-at', t)
-                n++
-                if (n >= 30) {
-                    journal.querySelector(
-                        'main > section:nth-child(1) > p:nth-child(2)',
-                    )?.remove()
-                }
-                journal.appendChild(p)
-            })
+            journal.appendChild(p)
+        })
     })
 }
