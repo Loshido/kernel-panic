@@ -1,7 +1,8 @@
+import { dispatch, Event } from 'lib/events.ts'
 type Data = Uint8Array<ArrayBufferLike>
 type Callback = (chunk: Data) => void
 
-export const consume = async (url: string, callback: Callback) => {
+const consume = async (url: string, callback: Callback) => {
     const response = await fetch(url)
     const stream = response.body
     if (!stream) return
@@ -24,4 +25,15 @@ export const consume = async (url: string, callback: Callback) => {
             if (value) callback(value)
         }
     }
+}
+
+export default async () => {
+    const decoder = new TextDecoder()
+    await consume('/live', (chunk) => {
+        const txt = decoder.decode(chunk)
+        const events = JSON.parse(txt) as Event[]
+        events.forEach(async event => {
+            await dispatch(event)
+        })
+    })
 }

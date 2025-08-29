@@ -1,11 +1,10 @@
 export const SCORE_MAX: number = 570
 
 export const events = {
-    aaa: {
-        journal: 'aaaaaaaaa',
+    aaa: () => {
+        return {}
     },
-    bbb: {
-        points: 10,
-        son: 'bbbbbbbbb',
-    },
+    bbb: () => {
+        return {}
+    }
 } as const

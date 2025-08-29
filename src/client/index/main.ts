@@ -1,15 +1,17 @@
-import group from './group.ts'
+import groupe from './groupe.ts'
 import mountain, { reload } from './mountain.ts'
 import { spawnStars } from './stars.ts'
 import journal from './journal.ts'
 import admin from './admin.ts'
+import setupStream from "./stream.ts"
 
-journal()
 spawnStars(5)
 
 const parent = mountain()
 parent.appendChild(admin())
-group()
+journal()
+groupe()
+setupStream()
 
 let qrcode = true
 document.addEventListener('keydown', (event) => {

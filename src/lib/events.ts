@@ -2,23 +2,7 @@
 import { events } from 'env'
 
 // évènements indispensables
-const staticEvents = {
-    points: {
-        constructor(
-            data: { groupe: string; add: number } | {
-                groupe: string
-                set: number
-            },
-        ) {
-            return data
-        },
-    },
-    journal: {
-        constructor(data: { message: string; son?: string }) {
-            return data
-        },
-    },
-} as const
+import { events as staticEvents } from '../events/mod.ts'
 
 // Ces types (/ usines à gaz) sont très importants
 // Ils déclenchent des erreurs losqu'un évènement n'est pas utilisé correctement
@@ -27,31 +11,35 @@ type Empty = Record<PropertyKey, undefined>
 type StaticEventId = keyof typeof staticEvents
 type DynEventId = keyof typeof events
 type EventId = StaticEventId | DynEventId
-type EventData<T extends EventId> = T extends StaticEventId
-    ? typeof staticEvents[T]
-    : T extends DynEventId ? typeof events[T]
-    : never
-type EventConstructor<T extends EventId> = 'constructor' extends
-    keyof EventData<T>
-    ? (EventData<T>['constructor'] extends (...args: any) => any
-        ? EventData<T>['constructor']
-        : never)
-    : never
+type EventData<T extends EventId> = 
+    T extends StaticEventId ? typeof staticEvents[T] : 
+    T extends DynEventId ? typeof events[T] : 
+    never
+type EventConstructor<T extends EventId> = EventData<T> extends (...args: any) => any ? EventData<T> : never
 type EventParamsData<T extends EventId> = EventConstructor<T> extends never ? []
     : Parameters<EventConstructor<T>>
 type EventReturnedData<T extends EventId> = EventConstructor<T> extends never
     ? Empty
     : ReturnType<EventConstructor<T>>
-type EventBody<T extends EventId> =
-    & Omit<EventData<T>, 'constructor'>
-    & EventReturnedData<T>
+type EventBody<T extends EventId = EventId> =
+    & Awaited<EventReturnedData<T>>
 
-type Event<T extends EventId> = {
+export type Event<T extends EventId = EventId> = {
     id: T
 } & EventBody<T>
 
-type Listener<T extends EventId = EventId> = (event: Event<T>) => Promise<void>
+export type Listener<T extends EventId = EventId> = (event: Event<T>) => (Promise<void> | void)
 const listeners: Map<EventId, Listener[]> = new Map()
+
+// Déclenche un évènement
+export const dispatch = async <T extends EventId>(event: Event<T>) => {
+    const callbacks = listeners.get(event.id)
+    if (!callbacks) return
+    
+    for (const listen of callbacks) {
+        await listen(event as unknown as Event<EventId>)
+    }
+}
 
 // Déclencher un évènement
 export const emit = async <T extends EventId>(
@@ -64,21 +52,14 @@ export const emit = async <T extends EventId>(
         ? staticEvents[id as StaticEventId]
         : {}
 
-    if ('constructor' in meta && typeof meta.constructor === 'function') {
-        Object.assign(meta, meta.constructor(...args))
-        // @ts-ignore On veut pas le constructeur sur l'objet event
-        delete meta.constructor
+    const event = {
+        id
     }
-    const event: Event<T> = {
-        id,
-        ...(meta as EventBody<T>),
+    if (typeof meta === 'function') {
+        Object.assign(event, await meta(...args))
     }
-    const callbacks = listeners.get(event.id)
-    if (!callbacks) return
-
-    for (const listen of callbacks) {
-        await listen(event as unknown as Event<EventId>)
-    }
+    
+    await dispatch(event as unknown as Event)
 }
 
 // Executer du code lorsqu'un évènement est déclenché

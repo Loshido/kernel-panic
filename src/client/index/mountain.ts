@@ -1,4 +1,4 @@
-import { groups } from './group.ts'
+import { groups } from './groupe.ts'
 
 const width = window.innerWidth
 const height = Math.floor(window.innerHeight / 2)
