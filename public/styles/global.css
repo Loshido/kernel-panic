@@ -10,7 +10,20 @@
 }
 
 body {
+    --text: #fff;
+    --couleur: #fff;
+    --fond: hsl(0, 0%, 10%);
+    --surbrillance: hsl(330, 100%, 57%);
+}
+
+
+::selection{
+    background-color: var(--surbrillance);
+    color: var(--text);
+}
+
+body {
     font-family: 'sora', monospace;
-    background-color: #191919;
-    color: #fff;
+    background-color: var(--fond);
+    color: var(--text);
 }

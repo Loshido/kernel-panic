@@ -4,8 +4,13 @@ import { spawnStars } from './stars.ts'
 import journal from './journal.ts'
 import admin from './admin.ts'
 import setupStream from "./stream.ts"
+import { couleurs } from 'env'
 
 spawnStars(5)
+
+Object.entries(couleurs).forEach(([propriete, valeur]) => {
+    document.body.attributeStyleMap.set(propriete, valeur)
+})
 
 const parent = mountain()
 parent.appendChild(admin())

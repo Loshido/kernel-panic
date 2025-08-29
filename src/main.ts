@@ -18,5 +18,6 @@ Deno.serve({
         fsRoot: './public',
         showDirListing: false,
         showIndex: true,
+        quiet: true
     })
 })
