@@ -117,7 +117,7 @@ body > footer > button {
     outline: none;
     color: var(--fond);
 
-    font-family: 'sora';
+    font-family: 'noto';
     font-size: 24px;
 }
 @media (width < 450px) {

@@ -14,7 +14,7 @@ export function spawnStars(n: number) {
     // on cherche le nb de lettres qu'on peut mettre
     // sur la hauteur de l'écran à la vertical
     const span = document.createElement('span')
-    span.style.font = '12px sora'
+    span.style.font = '12px noto'
     span.style.visibility = 'hidden'
     span.style.position = 'absolute'
     span.textContent = '1'

@@ -1,6 +1,6 @@
 @font-face {
-    font-family: 'sora';
-    src: url(/fonts/Sora.ttf);
+    font-family: 'noto';
+    src: url(/fonts/Noto.ttf);
 }
 
 * {
@@ -23,7 +23,7 @@ body {
 }
 
 body {
-    font-family: 'sora', monospace;
+    font-family: 'noto', monospace;
     background-color: var(--fond);
     color: var(--text);
 }
