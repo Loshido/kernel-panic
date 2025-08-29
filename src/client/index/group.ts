@@ -1,4 +1,4 @@
-import { SCORE_MAX } from '../../env.ts'
+import { SCORE_MAX } from 'env'
 import { points } from './mountain.ts'
 import { consume } from './stream.ts'
 

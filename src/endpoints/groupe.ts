@@ -1,4 +1,4 @@
-import kv, { type Membre } from '../kv.ts'
+import kv, { type Membre } from 'lib/kv.ts'
 import { nouvelleLigne } from './journal.ts'
 import { Endpoint } from './mod.ts'
 import sharp from 'sharp'

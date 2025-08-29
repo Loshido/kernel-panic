@@ -1,4 +1,4 @@
-import kv from '../kv.ts'
+import kv from 'lib/kv.ts'
 import { Endpoint } from './mod.ts'
 
 const streams: Map<string, ReadableStreamDefaultController> = new Map()

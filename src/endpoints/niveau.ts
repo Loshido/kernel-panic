@@ -1,5 +1,5 @@
 import type { Endpoint } from './mod.ts'
-import kv from '../kv.ts'
+import kv from 'lib/kv.ts'
 import { verify } from 'argon2'
 import { nouvelleLigne } from './journal.ts'
 import { addScore } from './score.ts'

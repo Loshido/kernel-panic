@@ -1,4 +1,4 @@
-import kv from '../kv.ts'
+import kv from 'lib/kv.ts'
 import { nouvelleLigne } from './journal.ts'
 import { Endpoint } from './mod.ts'
 import { addScore } from './score.ts'

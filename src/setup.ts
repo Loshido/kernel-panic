@@ -1,5 +1,5 @@
 import { hash } from 'argon2'
-import kv from './kv.ts'
+import kv from 'lib/kv.ts'
 
 const db = await kv()
 
